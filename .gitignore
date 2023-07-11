@@ -1,0 +1,6 @@
+# app specific settings
+.env
+
+# general python settings
+**/__pycache__/
+
