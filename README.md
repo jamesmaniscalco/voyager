@@ -4,7 +4,9 @@ dynamic engineering traveler system
 
 
 ## Architecture
-This app uses Python 3.9.2 and Django 4.0.5.
+This app uses Python 3.9.2 and Django 4.2.3.
+
+TODO: Update python version.
 
 ## Setup
 ### Database
