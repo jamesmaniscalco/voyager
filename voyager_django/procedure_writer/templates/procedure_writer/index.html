@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Procedures</h2>
+
+{{ procedure_list }}
+
+<button type="button" class="btn btn-primary">View/Revise Selected</button>
+<button type="button" class="btn btn-primary">New from Selected</button>
+<a type="button" class="btn btn-primary" href="{% url 'procedure_writer:new_procedure' %}" role="button">New Procedure</a>
+
+{% endblock %}
