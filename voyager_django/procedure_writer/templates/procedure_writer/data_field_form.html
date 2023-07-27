@@ -1,3 +1,5 @@
 {% load crispy_forms_tags %}
 
+<form class="col" method="post" action="{% url 'procedure_writer:data_field_form' procedure_id=procedure.id %}">
 {% crispy form %}
+</form>

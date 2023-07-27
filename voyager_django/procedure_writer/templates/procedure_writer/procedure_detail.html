@@ -75,10 +75,10 @@
             <div class="col-1 py-2 d-flex align-items-center border border-left-0">Used in Proc.</div>
             <div class="col-2 py-2 d-flex align-items-center border border-left-0">Actions</div>
         </div>
-        {% for data_field in procedure.data_fields %}
+        {% for data_field in procedure.data_fields.all %}
         <div class="row">
-            <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ data_field.title }}</div>
-            <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.field_type }}</div>
+            <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ data_field.name }}</div>
+            <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.get_field_type_display }}</div>
             <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.unit }}</div>
             <div class="col-1 py-2 d-flex align-items-center border-right border-bottom">0</div>
             <div class="col-1 py-2 d-flex align-items-center border-right border-bottom">no</div>

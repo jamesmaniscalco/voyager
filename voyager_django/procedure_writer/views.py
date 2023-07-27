@@ -41,22 +41,21 @@ def view_procedure(request, procedure_id):
 # view that serves partial template with "Add data field" button.
 def add_data_field_button(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
-    return TemplateResponse(
-        request, 
-        'procedure_writer/add_data_field_button.html',
-        {
-            'procedure': procedure,
-        }
-    )
+    return TemplateResponse(request, 'procedure_writer/add_data_field_button.html', context={'procedure':procedure})
 
 # view for serving and processing DataField forms.
 def data_field_form(request, procedure_id):
     # procedure ID is handled implicitly through the URL
     procedure = get_object_or_404(Procedure, pk=procedure_id)
     if request.method == 'GET':
-        data_field = DataField(procedure=procedure)
-        form = DataFieldForm(instance=data_field)
-        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form})
+        form = DataFieldForm(procedure=procedure)
+        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form, 'procedure':procedure})
+    if request.method == 'POST':
+        form = DataFieldForm(initial=request.POST, procedure=procedure)
+        data_field = form.save(commit=False)
+        print(data_field.name)
+        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form, 'procedure':procedure})
+
     
 # view for validating DataField forms.
 def data_field_form_validation(request, procedure_id):

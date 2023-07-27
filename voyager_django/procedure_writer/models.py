@@ -46,7 +46,7 @@ class Procedure(models.Model):
 
 # DataFields belong to procedures in a many-to-one relationship. They have names that describe what data is expected to be entered in a given traveler. The names are unique with respect to sibling DataFields within the same parent Procedure. DataFields have a field type, selected from a list. They have a unit which is strongly recommended to be defined if the field type is numeric.
 class DataField(models.Model):
-    procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE)
+    procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE, related_name='data_fields')
     name = models.CharField(max_length = 100)
     FIELD_TYPE_CHOICES = [
         ("passfail", "Pass/Fail"),
