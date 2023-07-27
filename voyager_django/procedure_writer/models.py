@@ -8,7 +8,7 @@ from django.dispatch import receiver
 # of the procedure are stored in ProcedureRevisions.
 class Procedure(models.Model):
     # TODO: think about what level of uniqueness is appropriate
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
 
     # for the purposes of data safety, Procedures CANNOT be
     # deleted if there are any filled out travelers or data

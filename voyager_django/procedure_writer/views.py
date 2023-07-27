@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.urls import reverse
 from django.template.response import TemplateResponse
 
@@ -7,9 +7,9 @@ from .forms import ProcedureForm, DataFieldForm
 
 
 # view that shows all Procedures.
-def index(request):
+def procedure_index(request):
     procedure_list = Procedure.objects.order_by('title')
-    return render(request, 'procedure_writer/index.html', {'procedure_list': procedure_list})
+    return render(request, 'procedure_writer/procedure_index.html', {'procedure_list': procedure_list})
 
 # view to create a new Procedure.
 def new_procedure(request):
@@ -25,18 +25,45 @@ def new_procedure(request):
             # make sure that a corresponding ProcedureRevision exists
             procedure.ensure_revision_present()
             # TODO: return a redirect to the procedure revision form
-            return HttpResponseRedirect(reverse('procedure_writer:index'))
+            return HttpResponseRedirect(reverse('procedure_writer:procedure_index'))
+        else:
+            context = {'form': form}
+            return render(request, 'procedure_writer/procedure_form.html', context)
 
-# view and/or edit a single procedure.
+# view a single procedure and its details.
 def view_procedure(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
-    return render(
-        request, 
-        'procedure_writer/procedure_detail.html', 
-        {
-            'procedure': procedure,
-        },
-    )
+    context = {'procedure': procedure}
+    return render(request, 'procedure_writer/procedure_detail.html', context)
+
+# edit the metadata of a procedure (i.e. not data specific to a revision).
+def edit_procedure_metadata(request, procedure_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    form = ProcedureForm(request.POST or None, instance=procedure)
+    if form.is_valid():
+        form.save()
+        return redirect('procedure_writer:view_procedure', procedure_id=procedure.id)
+    else:
+        context = {'form': form}
+        return render(request, 'procedure_writer/procedure_form.html', context)
+
+# delete a procedure.
+# TODO: logic to make sure that procedures only deleted if no published revisions.
+def delete_procedure(request, procedure_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    if request.method == 'POST':
+        procedure.delete()
+        return redirect('procedure_writer:procedure_index')
+    else:
+        context = {'procedure': procedure}
+        return render(request, 'procedure_writer/procedure_confirm_delete.html', context)
+
+    
+
+
+
+
+
 
 # view that serves partial template with "Add data field" button.
 def add_data_field_button(request, procedure_id):
@@ -53,7 +80,6 @@ def data_field_form(request, procedure_id):
     if request.method == 'POST':
         form = DataFieldForm(initial=request.POST, procedure=procedure)
         data_field = form.save(commit=False)
-        print(data_field.name)
         return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form, 'procedure':procedure})
 
     

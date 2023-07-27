@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1>Deleting Procedure</h1>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <p><strong>Title:</strong> {{ procedure.title }}</p>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete this Procedure?</p>
+            <p>This will delete all revisions and data fields associated with the Procedure.</p>
+            <p>Procedures can only be deleted if there are no published revisions.</p>
+            <input type="submit" value="Delete Procedure" class="btn btn-danger" />
+    </div>
+</div>
+
+
+
+{% endblock %}

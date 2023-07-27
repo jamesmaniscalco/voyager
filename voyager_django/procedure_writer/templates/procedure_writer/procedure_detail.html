@@ -13,90 +13,13 @@
 <div class="row g-2 pt-2 mt-0">
     <div class="col">
         <p><strong>Title:</strong> {{ procedure.title }}</p>
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:edit_procedure_metadata' procedure_id=procedure.id %}">Edit Title</a>
     </div>
 </div>
 
 <hr />
 
-<div class="row g-2 pt-2 mt-0">
-    <div class="col">
-        <h2>Data Fields</h2>
-        <p>This is the list of data to be collected during this procedure. Define data entry fields here before placing them in the traveler template.</p>
-        <p>Data fields cannot be edited or deleted if they have been used in a traveler. This is to prevent loss of data entered while executing procedures.</p>
-    </div>
-</div>
 
-{% comment %} <div class="row g-2 pt-2 mt-0">
-    <div class="col">
-        <table class="table table-hover table-bordered" id="data_fields_table">
-            <thead>
-                <tr>
-                    <th scope="col" class="col-4 align-middle">Data Field Name</th>
-                    <th scope="col" class="col-2 align-middle">Type</th>
-                    <th scope="col" class="col-1 align-middle">Unit</th>
-                    <th scope="col" class="col-1 align-middle">Traveler Entries</th>
-                    <th scope="col" class="col-1 align-middle">Used in Procedure</th>
-                    <th scope="col" class="col-3 align-middle">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for data_field in procedure.data_fields %}
-                <tr>
-                    <td class="align-middle">{{ data_field.title }}</td>
-                    <td class="align-middle">{{ data_field.field_type }}</td>
-                    <td class="align-middle">{{ data_field.unit }}</td>
-                    <td class="align-middle">0</td>
-                    <td class="align-middle">no</td>
-                    <td class="align-middle">
-                        <button type="button" class="btn btn-warning btn-sm">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td class="align-middle" colspan=6>No data fields</td>
-                </tr>
-                {% endfor %}
-                <tr id="data_fields_table_bottom_row">
-                {% include 'procedure_writer/add_data_field_button.html' %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div> {% endcomment %}
-
-<div class="row g-2 pt-2 mt-0">
-    <div class="col grid-striped">
-        <div class="row font-weight-bold">
-            <div class="col-4 py-2 d-flex align-items-center border">Data Field Name</div>
-            <div class="col-2 py-2 d-flex align-items-center border border-left-0">Type</div>
-            <div class="col-2 py-2 d-flex align-items-center border border-left-0">Unit</div>
-            <div class="col-1 py-2 d-flex align-items-center border border-left-0">Trav. Entries</div>
-            <div class="col-1 py-2 d-flex align-items-center border border-left-0">Used in Proc.</div>
-            <div class="col-2 py-2 d-flex align-items-center border border-left-0">Actions</div>
-        </div>
-        {% for data_field in procedure.data_fields.all %}
-        <div class="row">
-            <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ data_field.name }}</div>
-            <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.get_field_type_display }}</div>
-            <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.unit }}</div>
-            <div class="col-1 py-2 d-flex align-items-center border-right border-bottom">0</div>
-            <div class="col-1 py-2 d-flex align-items-center border-right border-bottom">no</div>
-            <div class="col-2 py-2 border-right border-bottom">
-                <button type="button" class="btn btn-warning btn-sm">Edit</button>
-                <button type="button" class="btn btn-danger btn-sm">Delete</button>
-            </div>
-        </div>
-        {% empty %}
-        <div class="row">
-            <div class="col py-2 border border-top-0" colspan=6>No data fields</div>
-        </div>
-        {% endfor %}
-        <div class="row" id="data_fields_table_bottom_row">
-        {% include 'procedure_writer/add_data_field_button.html' %}
-        </div>
-    </div>
-</div>
 
 {#{% crispy data_field_form %}#}
 
