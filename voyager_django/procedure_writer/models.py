@@ -40,6 +40,8 @@ class Procedure(models.Model):
         else:
             pass
 
+    # TODO: delete() function. Requires logic to check for existing Travelers
+
 
 
 # DataFields belong to procedures in a many-to-one relationship. They have names that describe what data is expected to be entered in a given traveler. The names are unique with respect to sibling DataFields within the same parent Procedure. DataFields have a field type, selected from a list. They have a unit which is strongly recommended to be defined if the field type is numeric.

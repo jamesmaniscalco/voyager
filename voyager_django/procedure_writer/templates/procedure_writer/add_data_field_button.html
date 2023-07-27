@@ -1,0 +1,7 @@
+<div class="col py-2 border border-top-0">
+    <button 
+        type="button" 
+        class="btn btn-primary btn-sm" 
+        hx-get="{% url 'procedure_writer:data_field_form' procedure_id=procedure.id %}"
+        hx-target="#data_fields_table_bottom_row">Add field</button>
+</div>

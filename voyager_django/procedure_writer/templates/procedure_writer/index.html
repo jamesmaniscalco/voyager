@@ -2,12 +2,79 @@
 
 {% block content %}
 
-<h2>Procedures</h2>
+<div class="row g-2 pt-2 mt-0">
+  <div class="col">
+    <h1>Procedures</h1>
+  </div>
+</div>
+<div class="row g-2 pt-2 mt-0">
+  <div class="col">
+    <a type="button" class="btn btn-primary btn-block" href="{% url 'procedure_writer:new_procedure' %}" role="button">New Procedure</a>
+  </div>
+</div>
 
-{{ procedure_list }}
+{% comment %} 
+<div class="row g-2 pt-2 mt-0">
+  <div class="col">
+    <table class="table table-hover table-bordered">
+      <thead>
+          <tr>
+              <th scope="col" class="col-6">Procedure</th>
+              <th scope="col" class="col-1">Revisions</th>
+              <th scope="col" class="col-1">Travelers</th>
+              <th scope="col" class="col-4">Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for procedure in procedure_list %}
+          <tr>
+              <th scope="row" class="align-middle">{{ procedure.title }}</th>
+              <td class="align-middle">{{ procedure.revisions.all|length }}</td>
+              <td class="align-middle">0</td>
+              <td class="align-middle">
+                  <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}">View/Revise</a>
+                  <button type="button" class="btn btn-primary btn-sm">New from This</button>
+                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+              </td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan=4>No procedures available</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table> 
+  </div>
+</div> {% endcomment %}
 
-<button type="button" class="btn btn-primary">View/Revise Selected</button>
-<button type="button" class="btn btn-primary">New from Selected</button>
-<a type="button" class="btn btn-primary" href="{% url 'procedure_writer:new_procedure' %}" role="button">New Procedure</a>
+
+<div class="row g-2 pt-2 mt-0">
+  <div class="col grid-striped mx-3">
+    <div class="row font-weight-bold">
+      <div class="col-4 py-2 border">Procedure</div>
+      <div class="col-2 py-2 border border-left-0 d-none d-md-block">Revisions</div>
+      <div class="col-2 py-2 border border-left-0 d-none d-md-block">Travelers</div>
+      <div class="col-2 py-2 border border-left-0 d-block d-md-none">Revs.</div>
+      <div class="col-2 py-2 border border-left-0 d-block d-md-none">Trav.</div>
+      <div class="col-4 py-2 border border-left-0">Actions</div>
+    </div>
+    {% for procedure in procedure_list %}
+    <div class="row">
+      <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ procedure.title }}</div>
+      <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ procedure.revisions.all|length }}</div>
+      <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">0</div>
+      <div class="col-4 py-2 border-right border-bottom">
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}">View/Revise</a>
+        <button type="button" class="btn btn-primary btn-sm">New from This</button>
+        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+      </div>
+    </div>
+    {% empty %}
+    <div class="row">
+      <div class="col py-2 border border-top-0">No procedures available</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
 {% endblock %}
