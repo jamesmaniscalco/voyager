@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.urls import reverse
+from django.http import Http404
 from django.template.response import TemplateResponse
 
 from .models import Procedure, DataField
@@ -84,46 +85,47 @@ def new_data_field(request, procedure_id):
         form.instance.procedure = procedure
     # process a POST request by saving the entry in the database (if data conforms to specs of model).
     elif request.method == 'POST':
-        form = DataFieldForm(request.POST)
+        form = DataFieldForm(request.POST, procedure_id=procedure.id)
         form.instance.procedure = procedure
         if form.is_valid():
             data_field = form.save()
-            return HttpResponseRedirect(reverse('procedure_writer:data_fields_index', kwargs={'procedure_id':data_field.procedure.id}))
+            return HttpResponseRedirect(reverse('procedure_writer:data_field_index', kwargs={'procedure_id':data_field.procedure.id}))
     context = {'form': form,
                 'page_title': "New Data Field",
                 'procedure_title': procedure.title}
     return render(request, 'procedure_writer/data_field_form.html', context)
 
-
-
-
-
-
-
-
-# view that serves partial template with "Add data field" button.
-def add_data_field_button(request, procedure_id):
+# logic for handling if supposedly related objects are not in fact related.
+def get_procedure_and_data_field_or_404(procedure_id, data_field_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
-    return TemplateResponse(request, 'procedure_writer/add_data_field_button.html', context={'procedure':procedure})
+    data_field = get_object_or_404(DataField, pk=data_field_id)
+    if data_field.procedure != procedure:
+        raise Http404("Data Field not associated with Procedure")
+    return procedure, data_field
 
-# view for serving and processing DataField forms.
-def data_field_form(request, procedure_id):
-    # procedure ID is handled implicitly through the URL
-    procedure = get_object_or_404(Procedure, pk=procedure_id)
-    if request.method == 'GET':
-        form = DataFieldForm(procedure=procedure)
-        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form, 'procedure':procedure})
+# edit the attributes of a DataField.
+def edit_data_field(request, procedure_id, data_field_id):
+    procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
+    form = DataFieldForm(request.POST or None, instance=data_field)
+    if form.is_valid():
+        form.save()
+        return redirect('procedure_writer:data_field_index', procedure_id=procedure.id)
+    else:
+        context = {
+            'form': form,
+            'page_title': "Edit Data Field",
+            'procedure_title': procedure.title,
+        }
+        return render(request, 'procedure_writer/data_field_form.html', context)
+
+# delete a procedure.
+# TODO: logic to make sure that DataFields only deleted if no entries and not in any revision.
+def delete_data_field(request, procedure_id, data_field_id):
+    procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
     if request.method == 'POST':
-        form = DataFieldForm(initial=request.POST, procedure=procedure)
-        data_field = form.save(commit=False)
-        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form, 'procedure':procedure})
+        data_field.delete()
+        return redirect('procedure_writer:data_field_index', procedure_id=procedure.id)
+    else:
+        context = {'data_field': data_field}
+        return render(request, 'procedure_writer/data_field_confirm_delete.html', context)
 
-    
-# view for validating DataField forms.
-def data_field_form_validation(request, procedure_id):
-    # procedure ID is handled implicitly through the URL
-    procedure = get_object_or_404(Procedure, pk=procedure_id)
-    if request.method == 'POST':
-        form = DataFieldForm(request.POST, procedure=procedure)
-        return TemplateResponse(request, 'procedure_writer/data_field_form.html', {'form': form})
-    

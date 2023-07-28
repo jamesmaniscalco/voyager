@@ -68,8 +68,8 @@
             <div class="col-1 py-2 d-flex align-items-center border-right border-bottom">no</div>
             <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">
                 <div class="my-auto ml-auto">
-                    <button type="button" class="btn btn-warning btn-sm">Edit</button>
-                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                    <a type="button" class="btn btn-warning btn-sm" href="{% url 'procedure_writer:edit_data_field' procedure_id=procedure.id data_field_id=data_field.id %}">Edit</a>
+                    <a type="button" class="btn btn-danger btn-sm" href="{% url 'procedure_writer:delete_data_field' procedure_id=procedure.id data_field_id=data_field.id %}">Delete</a>
                 </div>
             </div>
         </div>

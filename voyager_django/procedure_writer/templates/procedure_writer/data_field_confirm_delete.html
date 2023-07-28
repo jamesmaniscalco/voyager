@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1>Deleting Data Field</h1>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <p><strong>Procedure:</strong> {{ data_field.procedure.title }}</p>
+        <p><strong>Title:</strong> {{ data_field.name }}</p>
+        <p><strong>Field Type:</strong> {{ data_field.field_type }}</p>
+        <p><strong>Unit:</strong> {{ data_field.unit }}</p>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete this Data Field?</p>
+            <p>Data Fields can only be deleted if they are not included in any procedure revisions.</p>
+            <input type="submit" value="Delete Data Field" class="btn btn-danger" />
+            <a class="btn btn-secondary" href="{% url 'procedure_writer:data_field_index' procedure_id=data_field.procedure.id %}">Cancel</a>
+    </div>
+</div>
+
+
+
+{% endblock %}

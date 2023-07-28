@@ -70,6 +70,12 @@ class DataField(models.Model):
     def __str__(self):
         return self.name + ' (' + self.procedure.__str__() + ')'
     
+    def clean(self):
+        # we need to clear the unit field in case the field_type is not numeric
+        super(DataField, self).clean()
+        if self.field_type not in ('float', 'int'):
+            self.unit = ''
+
     def validate_constraints(self, *args, **kwargs):
         # the DataFieldForm does not include the parent Procedure item.
         # instead, it is handled implicitly by URL routing.

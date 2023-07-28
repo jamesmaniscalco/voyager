@@ -21,4 +21,20 @@
     </div>
 </div>
 
+<script>
+function update_unit_field_state() {
+    var val=$("#id_field_type").val();
+    if (val=="int" || val=="float") {
+        $("#id_unit").removeAttr('disabled');
+    } else {
+        $("#id_unit").attr('disabled',true);
+        $("#id_unit").val("");
+    }
+};
+window.onload = update_unit_field_state();
+$("#id_field_type").change(function () {
+    update_unit_field_state();
+});
+</script>
+
 {% endblock %}
