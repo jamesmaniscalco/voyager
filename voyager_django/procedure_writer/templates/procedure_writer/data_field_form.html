@@ -1,5 +1,24 @@
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-<form class="col" method="post" action="{% url 'procedure_writer:data_field_form' procedure_id=procedure.id %}">
-{% crispy form %}
-</form>
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1>{{ page_title }}</h1>
+    </div>
+</div>
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <p><strong>For Procedure:</strong> {{ procedure_title }}</p>
+    </div>
+</div>
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        {% crispy form %}
+    </div>
+</div>
+
+{% endblock %}

@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.template.response import TemplateResponse
 
 from .models import Procedure, DataField
-from .forms import ProcedureForm, DataFieldForm
+from .forms import ProcedureMetadataForm, DataFieldForm
 
 
 # view that shows all Procedures.
@@ -15,11 +15,14 @@ def procedure_index(request):
 def new_procedure(request):
     # GET request yields an empty form
     if request.method == 'GET':
-        context = {'form': ProcedureForm()}
-        return render(request, 'procedure_writer/procedure_form.html', context)
+        context = {
+            'form': ProcedureMetadataForm(),
+            'page_title': "New Procedure",
+        }
+        return render(request, 'procedure_writer/procedure_metadata_form.html', context)
     # process a POST request by saving the entry in the database (if data conforms to specs of model).
     elif request.method == 'POST':
-        form = ProcedureForm(request.POST)
+        form = ProcedureMetadataForm(request.POST)
         if form.is_valid():
             procedure = form.save()
             # make sure that a corresponding ProcedureRevision exists
@@ -27,8 +30,11 @@ def new_procedure(request):
             # TODO: return a redirect to the procedure revision form
             return HttpResponseRedirect(reverse('procedure_writer:procedure_index'))
         else:
-            context = {'form': form}
-            return render(request, 'procedure_writer/procedure_form.html', context)
+            context = {
+                'form': form,
+                'page_title': "New Procedure",
+            }
+            return render(request, 'procedure_writer/procedure_metadata_form.html', context)
 
 # view a single procedure and its details.
 def view_procedure(request, procedure_id):
@@ -39,13 +45,16 @@ def view_procedure(request, procedure_id):
 # edit the metadata of a procedure (i.e. not data specific to a revision).
 def edit_procedure_metadata(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
-    form = ProcedureForm(request.POST or None, instance=procedure)
+    form = ProcedureMetadataForm(request.POST or None, instance=procedure)
     if form.is_valid():
         form.save()
         return redirect('procedure_writer:view_procedure', procedure_id=procedure.id)
     else:
-        context = {'form': form}
-        return render(request, 'procedure_writer/procedure_form.html', context)
+        context = {
+            'form': form,
+            'page_title': "Edit Procedure Metadata",
+        }
+        return render(request, 'procedure_writer/procedure_metadata_form.html', context)
 
 # delete a procedure.
 # TODO: logic to make sure that procedures only deleted if no published revisions.
@@ -59,6 +68,33 @@ def delete_procedure(request, procedure_id):
         return render(request, 'procedure_writer/procedure_confirm_delete.html', context)
 
     
+
+
+# data fields index view.
+def data_field_index(request, procedure_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    context = {'procedure': procedure}
+    return render(request, 'procedure_writer/data_fields_index.html', context)
+
+def new_data_field(request, procedure_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    # GET request yields an empty form
+    if request.method == 'GET':
+        form = DataFieldForm(procedure_id=procedure.id)
+        form.instance.procedure = procedure
+    # process a POST request by saving the entry in the database (if data conforms to specs of model).
+    elif request.method == 'POST':
+        form = DataFieldForm(request.POST)
+        form.instance.procedure = procedure
+        if form.is_valid():
+            data_field = form.save()
+            return HttpResponseRedirect(reverse('procedure_writer:data_fields_index', kwargs={'procedure_id':data_field.procedure.id}))
+    context = {'form': form,
+                'page_title': "New Data Field",
+                'procedure_title': procedure.title}
+    return render(request, 'procedure_writer/data_field_form.html', context)
+
+
 
 
 

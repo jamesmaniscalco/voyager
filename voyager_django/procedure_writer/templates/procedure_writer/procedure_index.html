@@ -7,11 +7,7 @@
     <h1>Procedures</h1>
   </div>
 </div>
-<div class="row g-2 pt-2 mt-0">
-  <div class="col">
-    <a type="button" class="btn btn-primary btn-block" href="{% url 'procedure_writer:new_procedure' %}" role="button">New Procedure</a>
-  </div>
-</div>
+
 
 {% comment %} 
 <div class="row g-2 pt-2 mt-0">
@@ -63,10 +59,12 @@
       <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ procedure.title }}</div>
       <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ procedure.revisions.all|length }}</div>
       <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">0</div>
-      <div class="col-4 py-2 border-right border-bottom">
-        <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}">View/Revise</a>
-        <button type="button" class="btn btn-primary btn-sm">New from This</button>
-        <a type="button" class="btn btn-danger btn-sm" href="{% url 'procedure_writer:delete_procedure' procedure_id=procedure.id %}">Delete</a>
+      <div class="col-4 py-2 d-flex align-items-center border-right border-bottom">
+        <div class="my-auto ml-auto">
+          <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}">View/Revise</a>
+          <button type="button" class="btn btn-primary btn-sm">New from This</button>
+          <a type="button" class="btn btn-danger btn-sm" href="{% url 'procedure_writer:delete_procedure' procedure_id=procedure.id %}">Delete</a>
+        </div>
       </div>
     </div>
     {% empty %}
@@ -74,6 +72,12 @@
       <div class="col py-2 border border-top-0">No procedures available</div>
     </div>
     {% endfor %}
+  </div>
+</div>
+
+<div class="row g-2 pt-2 mt-0">
+  <div class="col">
+    <a type="button" class="btn btn-primary btn-block" href="{% url 'procedure_writer:new_procedure' %}" role="button">New Procedure</a>
   </div>
 </div>
 

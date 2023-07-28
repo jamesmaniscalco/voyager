@@ -1,5 +1,8 @@
-from django.db import models
+from django.db import models, IntegrityError
+from django.core.exceptions import ValidationError
 from django.dispatch import receiver
+
+
 
 # An instance of the Procedure model represents 
 # the broad goal of a given real-life procedure. 
@@ -51,7 +54,7 @@ class DataField(models.Model):
     FIELD_TYPE_CHOICES = [
         ("passfail", "Pass/Fail"),
         ("truefalse", "True/False"),
-        ("float", "Floating point decimal"),
+        ("float", "Decimal (float)"),
         ("int", "Integer"),
         ("char", "Short text (char)"),
         ("text", "Long text"),
@@ -64,10 +67,32 @@ class DataField(models.Model):
     field_type = models.CharField(choices=FIELD_TYPE_CHOICES, default="char")
     unit = models.CharField(max_length=100, blank=True)
 
+    def __str__(self):
+        return self.name + ' (' + self.procedure.__str__() + ')'
+    
+    def validate_constraints(self, *args, **kwargs):
+        # the DataFieldForm does not include the parent Procedure item.
+        # instead, it is handled implicitly by URL routing.
+        # Since it is excluded from the form, we need to manually bring it back into the
+        # list of fields to be validated.
+        # The logic below allows other fields to be excluded, if that is needed in the future.
+        if 'exclude' in kwargs:
+            kwargs['exclude'].discard('procedure')
+            exclude=kwargs.pop('exclude')
+        else:
+            exclude=None
+        try:
+            super(DataField, self).validate_constraints(exclude)
+        except ValidationError as e:
+            # since there is only one constraint, we can assume it is what caused the error.
+            # If any constraints are added in the future, this logic will need to be updated.
+            raise ValidationError({'name': "This Data Field name has already been used in this Procedure."})
+    
+
     class Meta:
         constraints = [
             # field name must be unique within the procedure
-            models.UniqueConstraint(fields=["procedure","name"], name="unique_name_within_procedure", violation_error_message="Field name already used within the procedure.")
+            models.UniqueConstraint(fields=["name","procedure"], name="unique_name_within_procedure")#, violation_error_message="Field name already used within the procedure.")
         ]
 
 

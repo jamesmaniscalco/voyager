@@ -13,12 +13,18 @@
 <div class="row g-2 pt-2 mt-0">
     <div class="col">
         <p><strong>Title:</strong> {{ procedure.title }}</p>
-        <a type="button" class="btn btn-primary btn-sm" href="{% url 'procedure_writer:edit_procedure_metadata' procedure_id=procedure.id %}">Edit Title</a>
+        <a type="button" class="btn btn-primary" href="{% url 'procedure_writer:edit_procedure_metadata' procedure_id=procedure.id %}">Edit Title</a>
     </div>
 </div>
 
 <hr />
 
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <a type="button" class="btn btn-primary" href="{% url 'procedure_writer:data_field_index' procedure_id=procedure.id %}">View/Edit Data Fields</a>
+    </div>
+</div>
 
 
 {#{% crispy data_field_form %}#}
