@@ -4,6 +4,12 @@
 
 <div class="row g-2 pt-2 mt-0">
     <div class="col">
+        <h1>{{ procedure.title }}</h1>
+        <p><a href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}" role="button">Back to main Procedure page</a></p>
+    </div>
+</div>
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
         <h2>Data Fields</h2>
         <p>This is the list of data to be collected during this procedure. Define data entry fields here before placing them in the traveler template.</p>
         <p>Data fields cannot be edited or deleted if they have been used in a traveler. This is to prevent loss of data entered while executing procedures.</p>
@@ -59,7 +65,7 @@
             <div class="col-1 py-2 d-flex align-items-center border border-left-0">Used in Proc.</div>
             <div class="col-2 py-2 d-flex align-items-center border border-left-0">Actions</div>
         </div>
-        {% for data_field in procedure.data_fields.all %}
+        {% for data_field in procedure.data_fields.all|dictsort:"name" %}
         <div class="row">
             <div class="col-4 py-2 d-flex align-items-center border border-top-0">{{ data_field.name }}</div>
             <div class="col-2 py-2 d-flex align-items-center border-right border-bottom">{{ data_field.get_field_type_display }}</div>
@@ -85,6 +91,8 @@
     <div class="col">
       <a type="button" class="btn btn-primary btn-block" href="{% url 'procedure_writer:new_data_field' procedure_id=procedure.id %}" role="button">New Data Field</a>
     </div>
-  </div>
+</div>
+
+
 
 {% endblock %}

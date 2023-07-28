@@ -75,7 +75,7 @@ def delete_procedure(request, procedure_id):
 def data_field_index(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
     context = {'procedure': procedure}
-    return render(request, 'procedure_writer/data_fields_index.html', context)
+    return render(request, 'procedure_writer/data_field_index.html', context)
 
 def new_data_field(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
