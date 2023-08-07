@@ -1,9 +1,9 @@
 
 
-.grid-striped .row:nth-of-type(odd) {
+.grid-striped > .row:nth-of-type(odd) {
     background-color: rgba(0,0,0,.05);
 }
 
-.grid-striped .row .col .row {
+.grid-striped > .row {
     background-color: none;
 }

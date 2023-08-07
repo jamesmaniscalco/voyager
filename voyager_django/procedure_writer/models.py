@@ -27,6 +27,11 @@ class Procedure(models.Model):
         else:
             return 0
     
+    def can_create_new_revision(self):
+        if self.revisions.order_by('-revision_number').first().is_published:
+            return True
+        return False
+
     # TODO: if not first revision, copy the previous one
     def create_new_revision(self):
         revision = ProcedureRevision(procedure = self, revision_number = self.next_revision_number())
@@ -131,6 +136,22 @@ class ProcedureRevision(models.Model):
 
     def __str__(self):
         return self.procedure.__str__() + f" (rev { self.revision_number })"
+    
+    def can_be_published(self):
+        return True if not self.is_published else False
+    
+    def can_be_returned_to_draft(self):
+        # check if no travelers issued # TODO after implementing Travelers
+        # check if this is the latest revision
+        if self.revision_number == max([r.revision_number for r in self.procedure.revisions]):
+            return True
+        return False
+    
+    def can_be_deleted(self):
+        if not self.is_published:
+            if self.procedure.revisions.count() > 1:
+                return True
+        return False
 
     class Meta:
         constraints = [
