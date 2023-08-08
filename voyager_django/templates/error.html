@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1 class="text-center">Error</h1>
+    </div>
+</div>
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h2 class="text-center">{% block error_type %}{% endblock %}</h2>
+        <p class="text-center">{% block error_text %}{% endblock %}</p>
+    </div>
+</div>
+
+{% debug %}
+
+{% endblock %}

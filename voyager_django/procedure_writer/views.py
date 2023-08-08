@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.urls import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.template.response import TemplateResponse
+from django.core.exceptions import PermissionDenied, BadRequest
 
 from .models import Procedure, DataField
 from .forms import ProcedureMetadataForm, DataFieldForm
 
+
+### Procedures
 
 # view that shows all Procedures.
 def procedure_index(request):
@@ -71,6 +74,8 @@ def delete_procedure(request, procedure_id):
     
 
 
+### DataFields
+
 # data fields index view.
 def data_field_index(request, procedure_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
@@ -100,12 +105,15 @@ def get_procedure_and_data_field_or_404(procedure_id, data_field_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
     data_field = get_object_or_404(DataField, pk=data_field_id)
     if data_field.procedure != procedure:
-        raise Http404("Data Field not associated with Procedure")
+        raise BadRequest("The requested Data Field and Procedure are not associated with each other.")
     return procedure, data_field
 
 # edit the attributes of a DataField.
 def edit_data_field(request, procedure_id, data_field_id):
-    procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
+    try:
+        procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
+    except BadRequest as e:
+        raise e
     form = DataFieldForm(request.POST or None, instance=data_field)
     if form.is_valid():
         form.save()
@@ -129,3 +137,16 @@ def delete_data_field(request, procedure_id, data_field_id):
         context = {'data_field': data_field}
         return render(request, 'procedure_writer/data_field_confirm_delete.html', context)
 
+
+
+
+### ProcedureRevisions
+
+# Create a new procedure revision.
+def new_procedure_revision(request, procedure_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    if procedure.can_create_new_revision():
+        procedure.create_new_revision()
+        return redirect('procedure_writer:view_procedure', procedure_id=procedure_id)
+    else:
+        raise PermissionDenied("A new procedure revision cannot be created at this time.")

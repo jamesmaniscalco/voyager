@@ -1,0 +1,5 @@
+{% extends "error.html" %}
+
+{% block error_type %}400{% endblock %}
+
+{% block error_text %}{% if exception %}{{ exception }}{% else %}The request could not be processed.{% endif %}{% endblock %}

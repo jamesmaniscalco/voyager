@@ -28,9 +28,9 @@ load_dotenv(dotenv_path)
 SECRET_KEY = getenv('APPSECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = getenv("ALLOWED_HOSTS").split(' ')
 
 
 # Application definition

@@ -50,14 +50,14 @@
           {% if revision.is_published %}
             
             {% if revision.can_be_returned_to_draft %}
-              <a type="button" class="btn btn-warning btn-sm" href="">Return to Draft</a>
+            <a type="button" class="btn btn-warning btn-sm" href="">Return to Draft</a>
             {% endif %}
 
           {% else %}
             <a type="button" class="btn btn-warning btn-sm" href="">Edit</a>
             
             {% if revision.can_be_published %}
-              <a type="button" class="btn btn-success btn-sm" href="">Publish</a>
+            <a type="button" class="btn btn-success btn-sm" href="">Publish</a>
             {% endif %}
             
             {% if revision.can_be_deleted %}
