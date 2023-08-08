@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1>{{ revision }}</h1>
+        <h2>Editing Draft Revision</h2>
+        <p><a href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}" role="button">Back to main Procedure page</a></p>
+    </div>
+</div>
+
+<hr />
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h3>Revision Metadata</h3>
+        <dl class="row">
+            <dt class="col-3">Reference document:</dt>
+            <dd class="col-9">
+                {% if revision.reference_document_title %}
+                {{ revision.reference_document_title }}
+                {% else %}
+                <em>[none]</em>
+                {% endif %}
+            </dd>
+        
+            <dt class="col-3">Reference document URL:</dt>
+            <dd class="col-9">
+                {% if revision.reference_document_URL %}
+                <a href="{{ revision.reference_document_URL }}">{{ revision.reference_document_URL }}</a>
+                {% else %}
+                <em>[none]</em>
+                {% endif %}
+            </dd>
+        </dl>
+        <a type="button" class="btn btn-warning" href="{% url 'procedure_writer:edit_procedure_revision_metadata' procedure_id=procedure.id revision_id=revision.id %}">Edit Revision Metadata</a>
+    </div>
+</div>
+
+
+<hr />
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h3>Traveler Template</h3>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -4,8 +4,8 @@ from django.http import Http404, HttpResponseForbidden
 from django.template.response import TemplateResponse
 from django.core.exceptions import PermissionDenied, BadRequest
 
-from .models import Procedure, DataField
-from .forms import ProcedureMetadataForm, DataFieldForm
+from .models import Procedure, DataField, ProcedureRevision
+from .forms import ProcedureMetadataForm, DataFieldForm, ProcedureRevisionMetadataForm
 
 
 ### Procedures
@@ -74,6 +74,8 @@ def delete_procedure(request, procedure_id):
     
 
 
+
+
 ### DataFields
 
 # data fields index view.
@@ -101,7 +103,7 @@ def new_data_field(request, procedure_id):
     return render(request, 'procedure_writer/data_field_form.html', context)
 
 # logic for handling if supposedly related objects are not in fact related.
-def get_procedure_and_data_field_or_404(procedure_id, data_field_id):
+def get_procedure_and_data_field_or_raise_error(procedure_id, data_field_id):
     procedure = get_object_or_404(Procedure, pk=procedure_id)
     data_field = get_object_or_404(DataField, pk=data_field_id)
     if data_field.procedure != procedure:
@@ -110,10 +112,7 @@ def get_procedure_and_data_field_or_404(procedure_id, data_field_id):
 
 # edit the attributes of a DataField.
 def edit_data_field(request, procedure_id, data_field_id):
-    try:
-        procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
-    except BadRequest as e:
-        raise e
+    procedure, data_field = get_procedure_and_data_field_or_raise_error(procedure_id, data_field_id)
     form = DataFieldForm(request.POST or None, instance=data_field)
     if form.is_valid():
         form.save()
@@ -129,13 +128,16 @@ def edit_data_field(request, procedure_id, data_field_id):
 # delete a procedure.
 # TODO: logic to make sure that DataFields only deleted if no entries and not in any revision.
 def delete_data_field(request, procedure_id, data_field_id):
-    procedure, data_field = get_procedure_and_data_field_or_404(procedure_id, data_field_id)
+    procedure, data_field = get_procedure_and_data_field_or_raise_error(procedure_id, data_field_id)
     if request.method == 'POST':
         data_field.delete()
         return redirect('procedure_writer:data_field_index', procedure_id=procedure.id)
     else:
         context = {'data_field': data_field}
         return render(request, 'procedure_writer/data_field_confirm_delete.html', context)
+
+
+
 
 
 
@@ -150,3 +152,35 @@ def new_procedure_revision(request, procedure_id):
         return redirect('procedure_writer:view_procedure', procedure_id=procedure_id)
     else:
         raise PermissionDenied("A new procedure revision cannot be created at this time.")
+    
+# logic for handling if supposedly related objects are not in fact related.
+def get_procedure_and_revision_or_raise_error(procedure_id, revision_id):
+    procedure = get_object_or_404(Procedure, pk=procedure_id)
+    revision = get_object_or_404(ProcedureRevision, pk=revision_id)
+    if revision.procedure != procedure:
+        raise BadRequest("The requested Procedure and Procedure Revision are not associated with each other.")
+    return procedure, revision
+
+# edit a procedure revision draft (add, remove, rearrange ProcedureElements).
+def edit_procedure_revision(request, procedure_id, revision_id):
+    procedure, revision = get_procedure_and_revision_or_raise_error(procedure_id, revision_id)
+    context = {
+        'procedure': procedure,
+        'revision': revision,
+    }
+    return render(request, 'procedure_writer/procedure_revision_form.html', context)
+
+# edit the metadata for an existing procedure revision draft.
+def edit_procedure_revision_metadata(request, procedure_id, revision_id):
+    procedure, revision = get_procedure_and_revision_or_raise_error(procedure_id, revision_id)
+    form = ProcedureRevisionMetadataForm(request.POST or None, instance=revision)
+    if form.is_valid():
+        form.save()
+        return redirect('procedure_writer:edit_procedure_revision', procedure_id=procedure.id, revision_id=revision.id)
+    else:
+        context = {
+            'form': form,
+            'page_title': "Edit Procedure Revision Metadata",
+            'revision_title': revision,
+        }
+        return render(request, 'procedure_writer/procedure_revision_metadata_form.html', context)

@@ -45,23 +45,23 @@
       </div>
       <div class="col-6 py-2 d-flex align-items-center border-right border-bottom">
         <div class="my-auto ml-auto">
-          <a type="button" class="btn btn-primary btn-sm" href="">View Traveler Template</a>
+          <a type="button" class="btn btn-primary btn-sm" href="#">View Traveler Template</a>
           
           {% if revision.is_published %}
             
             {% if revision.can_be_returned_to_draft %}
-            <a type="button" class="btn btn-warning btn-sm" href="">Return to Draft</a>
+            <a type="button" class="btn btn-warning btn-sm" href="#">Return to Draft</a>
             {% endif %}
 
           {% else %}
-            <a type="button" class="btn btn-warning btn-sm" href="">Edit</a>
+            <a type="button" class="btn btn-warning btn-sm" href="{% url 'procedure_writer:edit_procedure_revision' procedure_id=procedure.id revision_id=revision.id %}">Edit</a>
             
             {% if revision.can_be_published %}
-            <a type="button" class="btn btn-success btn-sm" href="">Publish</a>
+            <a type="button" class="btn btn-success btn-sm" href="#">Publish</a>
             {% endif %}
             
             {% if revision.can_be_deleted %}
-            <a type="button" class="btn btn-danger btn-sm" href="">Delete</a>
+            <a type="button" class="btn btn-danger btn-sm" href="#">Delete</a>
             {% endif %}
           
           {% endif %}

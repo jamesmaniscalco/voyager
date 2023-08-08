@@ -20,5 +20,8 @@ urlpatterns = [
     path("procedu-res/<int:procedure_id>/data_fields/<int:data_field_id>/delete/", views.delete_data_field, name="delete_data_field"),
 
     # revisions
+    path("procedures/<int:procedure_id>/revisions/", RedirectView.as_view(pattern_name="procedure_writer:view_procedure")),
     path("procedures/<int:procedure_id>/revisions/new/", views.new_procedure_revision, name="new_procedure_revision"),
+    path("procedures/<int:procedure_id>/revisions/<int:revision_id>/edit/", views.edit_procedure_revision, name="edit_procedure_revision"),
+    path("procedures/<int:procedure_id>/revisions/<int:revision_id>/edit/metadata/", views.edit_procedure_revision_metadata, name="edit_procedure_revision_metadata"),
 ]
