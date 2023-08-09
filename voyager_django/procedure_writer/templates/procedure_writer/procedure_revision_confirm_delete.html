@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <h1>Deleting Procedure Revision</h1>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <p><strong>Title:</strong> {{ revision }}</p>
+    </div>
+</div>
+
+
+<div class="row g-2 pt-2 mt-0">
+    <div class="col">
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete this Revision?</p>
+            <p>Procedure revisions can only be deleted if they are in draft mode. They cannot have any issued travelers.</p>
+            <input type="submit" value="Delete Procedure Revision" class="btn btn-danger" />
+            <a class="btn btn-secondary" href="{% url 'procedure_writer:view_procedure' procedure_id=procedure.id %}">Cancel</a>
+    </div>
+</div>
+
+
+
+{% endblock %}

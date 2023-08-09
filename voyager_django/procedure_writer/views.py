@@ -125,7 +125,7 @@ def edit_data_field(request, procedure_id, data_field_id):
         }
         return render(request, 'procedure_writer/data_field_form.html', context)
 
-# delete a procedure.
+# delete a data field.
 # TODO: logic to make sure that DataFields only deleted if no entries and not in any revision.
 def delete_data_field(request, procedure_id, data_field_id):
     procedure, data_field = get_procedure_and_data_field_or_raise_error(procedure_id, data_field_id)
@@ -146,12 +146,12 @@ def delete_data_field(request, procedure_id, data_field_id):
 
 # Create a new procedure revision.
 def new_procedure_revision(request, procedure_id):
-    procedure = get_object_or_404(Procedure, pk=procedure_id)
-    if procedure.can_create_new_revision():
-        procedure.create_new_revision()
-        return redirect('procedure_writer:view_procedure', procedure_id=procedure_id)
-    else:
-        raise PermissionDenied("A new procedure revision cannot be created at this time.")
+    if request.method=='POST':
+        procedure = get_object_or_404(Procedure, pk=procedure_id)
+        if procedure.can_create_new_revision():
+            procedure.create_new_revision()
+            return redirect('procedure_writer:view_procedure', procedure_id=procedure_id)
+    raise PermissionDenied("A new procedure revision cannot be created at this time.")
     
 # logic for handling if supposedly related objects are not in fact related.
 def get_procedure_and_revision_or_raise_error(procedure_id, revision_id):
@@ -184,3 +184,36 @@ def edit_procedure_revision_metadata(request, procedure_id, revision_id):
             'revision_title': revision,
         }
         return render(request, 'procedure_writer/procedure_revision_metadata_form.html', context)
+    
+# publish a revision
+def publish_procedure_revision(request, procedure_id, revision_id):
+    if request.method=='POST':
+        procedure, revision = get_procedure_and_revision_or_raise_error(procedure_id, revision_id)
+        if revision.can_be_published():
+            revision.is_published = True
+            revision.save()
+            return redirect('procedure_writer:view_procedure', procedure_id=procedure.id)
+    raise PermissionDenied("The revision cannot be published at this time.")
+
+# un-publish a revision
+def return_revision_to_draft(request, procedure_id, revision_id):
+    if request.method=='POST':
+        procedure, revision = get_procedure_and_revision_or_raise_error(procedure_id, revision_id)
+        if revision.can_be_returned_to_draft():
+            revision.is_published = False
+            revision.save()
+            return redirect('procedure_writer:view_procedure', procedure_id=procedure.id)
+    raise PermissionDenied("The revision cannot be returned to draft at this time.")
+
+# delete a revision - must be in draft mode
+def delete_revision_draft(request, procedure_id, revision_id):
+    procedure, revision = get_procedure_and_revision_or_raise_error(procedure_id, revision_id)
+    if request.method == 'POST':
+        revision.delete()
+        return redirect('procedure_writer:view_procedure', procedure_id=procedure.id)
+    else:
+        context = {
+            'revision': revision,
+            'procedure': procedure,
+        }
+        return render(request, 'procedure_writer/procedure_revision_confirm_delete.html', context)

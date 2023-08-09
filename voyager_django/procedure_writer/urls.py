@@ -24,4 +24,7 @@ urlpatterns = [
     path("procedures/<int:procedure_id>/revisions/new/", views.new_procedure_revision, name="new_procedure_revision"),
     path("procedures/<int:procedure_id>/revisions/<int:revision_id>/edit/", views.edit_procedure_revision, name="edit_procedure_revision"),
     path("procedures/<int:procedure_id>/revisions/<int:revision_id>/edit/metadata/", views.edit_procedure_revision_metadata, name="edit_procedure_revision_metadata"),
+    path("procedures/<int:procedure_id>/revisions/<int:revision_id>/publish/", views.publish_procedure_revision, name="publish_procedure_revision"),
+    path("procedures/<int:procedure_id>/revisions/<int:revision_id>/unpublish/", views.return_revision_to_draft, name="return_revision_to_draft"),
+    path("procedures/<int:procedure_id>/revisions/<int:revision_id>/delete_draft/", views.delete_revision_draft, name="delete_revision_draft"),
 ]

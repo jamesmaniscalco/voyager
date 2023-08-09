@@ -23,7 +23,7 @@ class Procedure(models.Model):
     def next_revision_number(self):
         used_numbers = [r.revision_number for r in self.revisions.all()]
         if used_numbers:
-            return max(used_numbers)
+            return max(used_numbers)+1
         else:
             return 0
     
@@ -140,10 +140,15 @@ class ProcedureRevision(models.Model):
     def can_be_published(self):
         return True if not self.is_published else False
     
+    def is_latest_published_revision(self):
+        if self.revision_number == max([r.revision_number for r in self.procedure.revisions.filter(is_published=True)]):
+            return True
+        return False
+
     def can_be_returned_to_draft(self):
         # check if no travelers issued # TODO after implementing Travelers
         # check if this is the latest revision
-        if self.revision_number == max([r.revision_number for r in self.procedure.revisions]):
+        if self.revision_number == max([r.revision_number for r in self.procedure.revisions.all()]):
             return True
         return False
     

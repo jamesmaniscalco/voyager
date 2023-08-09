@@ -31,7 +31,7 @@ class ProcedureMetadataForm(forms.ModelForm):
 
 
 
-
+# Form class for handling data fields
 class DataFieldForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'procedure_id' in kwargs:
@@ -62,7 +62,7 @@ class DataFieldForm(forms.ModelForm):
 
 
 
-
+# Form class for procedure revision metadata
 class ProcedureRevisionMetadataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProcedureRevisionMetadataForm, self).__init__(*args, **kwargs)
@@ -84,3 +84,8 @@ class ProcedureRevisionMetadataForm(forms.ModelForm):
         model = ProcedureRevision
         fields = ['reference_document_title', 'reference_document_URL']
         exclude = ['is_published', 'revision_number']
+
+
+
+
+

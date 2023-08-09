@@ -41,6 +41,10 @@
         {{ revision }}
         {% if not revision.is_published %}
           &nbsp;<span class="badge badge-pill badge-warning">draft</span>
+        {% else %}
+          {% if revision.is_latest_published_revision %}
+            &nbsp;<span class="badge badge-pill badge-success">latest release</span>
+          {% endif %}
         {% endif %}
       </div>
       <div class="col-6 py-2 d-flex align-items-center border-right border-bottom">
@@ -50,18 +54,24 @@
           {% if revision.is_published %}
             
             {% if revision.can_be_returned_to_draft %}
-            <a type="button" class="btn btn-warning btn-sm" href="#">Return to Draft</a>
+            <form class="d-inline" method="post" action="{% url 'procedure_writer:return_revision_to_draft' procedure_id=procedure.id revision_id=revision.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-warning btn-sm" name="unpublish" value="unpublish">Return to Draft</button>
+            </form>
             {% endif %}
 
           {% else %}
             <a type="button" class="btn btn-warning btn-sm" href="{% url 'procedure_writer:edit_procedure_revision' procedure_id=procedure.id revision_id=revision.id %}">Edit</a>
             
             {% if revision.can_be_published %}
-            <a type="button" class="btn btn-success btn-sm" href="#">Publish</a>
+            <form class="d-inline" method="post" action="{% url 'procedure_writer:publish_procedure_revision' procedure_id=procedure.id revision_id=revision.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm" name="publish" value="publish">Publish</button>
+            </form>
             {% endif %}
             
             {% if revision.can_be_deleted %}
-            <a type="button" class="btn btn-danger btn-sm" href="#">Delete</a>
+            <a type="button" class="btn btn-danger btn-sm" href="{% url 'procedure_writer:delete_revision_draft' procedure_id=procedure.id revision_id=revision.id %}">Delete</a>
             {% endif %}
           
           {% endif %}
@@ -75,7 +85,10 @@
 <div class="row g-2 pt-2 mt-0">
   <div class="col">
     {% if procedure.can_create_new_revision %}
-      <a type="button" class="btn btn-primary btn-block" href="" role="button">New Draft Revision</a>
+      <form class="d-inline" method="post" action="{% url 'procedure_writer:new_procedure_revision' procedure_id=procedure.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-block" name="new_draft_revision" value="new_draft_revision">New Draft Revision</button>
+      </form>
     {% else %}
       <span class="d-block" tabindex="0" data-toggle="tooltip" title="New draft revision cannot be created.">
       <button class="btn btn-primary btn-block" style="pointer-events: none;" type="button" disabled>New Draft Revision</button>
